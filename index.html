@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="Keywords" content="">
+    <meta name="Description" content="" />
+    <title>苹果系统相册现实台</title>
+    <style>
+        *{margin:0 ; padding: 0;}
+        body,html{
+            height: 100%;
+            background: #000;
+            overflow-x: hidden;
+        }
+        #box{height:100%;}
+        #pic{height: 300px;margin:150px auto;
+             position: relative;
+            -webkit-transform-style:preserve-3d;
+            -webkit-perspective:800px;
+        }
+        #pic img{width:350px;
+            position: absolute;
+            -webkit-box-reflect:below 0
+            -webkit-linear-gradient(top,rgba(0,0,0,.1),rgba(0,0,0,.5));
+            -webkit-transition:.6s; }
+        #pic .now{transform:translateZ(105px);}
+        #pic .front{transform:rotateY(45deg) translateZ(-100px);}
+        #pic .back{transform:rotateY(-45deg) translateZ(-100px);}
+
+    </style>
+</head>
+<body>
+    <div id="box">
+        <div id="pic">
+            <img src="img/1.jpg" />
+            <img src="img/2.jpg" />
+            <img src="img/3.jpg" />
+            <img src="img/4.jpg" />
+            <img src="img/5.jpg" />
+            <img src="img/10.jpg" />
+            <img src="img/7.jpg" />
+            <img src="img/8.jpg" />
+            <img src="img/9.jpg" />
+            <img src="img/6.jpg" />
+            <img src="img/11.jpg" />
+        </div>
+    </div>
+
+
+     <script src="js/jquery.js"></script>
+     <script>
+            var imglen = $("img").length;
+            var midIndex = Math.floor(imglen/2);//初始化中间图片的序列号
+            var imgLeft = [];
+
+
+        //为每个img添加初始化命名
+         for(var i=0 ; i<imglen;i++){
+             if(i<midIndex){
+                 $("img").eq(i).addClass("front");
+             }else if(i>midIndex){
+                 $("img").eq(i).addClass("back");
+             }else{
+                 $("img").eq(i).addClass("now");
+             };
+         };
+
+         //当前的图片进行居中左右排开
+         function mid(){
+             var oWid = $(window).width();//获取窗口的宽度
+             var mIndex = $(".now").index();//获取当前图片的列号
+             $(".now").css("left",oWid/2-150+'px');//获取当前图片位置居中
+             //左右图片排开，再获取每个图片的left的值
+             for(var i=0; i<imglen;i++){
+                 $("img").eq(i).css("left",oWid/2-150-100*(mIndex-i)+'px');
+                 imgLeft[i]=parseInt($("img").eq(i).css("left"));
+             }
+         };
+
+         mid();//执行
+         $(window).resize(function(){mid()});//调整窗口时再执行
+
+         //点击事件
+         $("img").click(function() {
+             var nowIndex = $(this).index();
+             //所有图片移动
+             for (var i = 0; i < imglen; i++) {
+                 imgLeft[i] -= 100 * (nowIndex - midIndex);
+                 $("img").eq(i).css("left", imgLeft[i]);
+
+             }
+             ;
+             for (var i = 0; i < imglen; i++) {
+
+                 if (i < nowIndex) {
+                     $("img").eq(i).removeClass().addClass("front");
+                 } else if (i > nowIndex) {
+                     $("img").eq(i).removeClass().addClass("back");
+
+                 }
+                 ;
+             }
+             ;
+            midIndex = nowIndex;//替换当前图片的序列号
+           $(this).removeClass().addClass("now");
+
+         });
+
+
+     </script>
+</body>
+</html>
